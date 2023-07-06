@@ -4,6 +4,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import { MailOptions } from "nodemailer/lib/json-transport";
 import { InvoiceFields } from "../frontend/interfaces/invoices";
+import { EmailEndpointParameter } from "../frontend/interfaces/emails";
 
 dotenv.config();
 
@@ -26,10 +27,11 @@ const transporter = nodemailer.createTransport({
 });
 
 app.post("/send", async (req: Request, res: Response) => {
-  const invoiceDetails = req.body.invoiceDetails as InvoiceFields;
+  const userRequest = req.body as EmailEndpointParameter;
+  const invoiceDetails = userRequest.invoiceDetails as InvoiceFields;
+
   const mailOptions: MailOptions = {
-    // from: '"Daniel from Voizer" <danielleemusic98@gmail.com>', // sender address
-    from: `"${invoiceDetails.from.name} from Voizer" <${invoiceDetails.from.name}@voizer.com>`, // sender address
+    from: `"${invoiceDetails.from.name} from Voizer"`, // sender address
     to: invoiceDetails.to.email, // list of receivers
     subject: `Hi, ${invoiceDetails.to.name}! Please find your invoice from ${invoiceDetails.from.name} attached`, // Subject line
     text: "Thanks for doing business with us :)", // plain text body
@@ -37,7 +39,7 @@ app.post("/send", async (req: Request, res: Response) => {
     attachments: [
       {
         filename: `#INV${invoiceDetails.invoiceNumber}.pdf`,
-        content: req.body.encodedInvoice, // your base64 encoded pdf
+        content: userRequest.encodedInvoice, // your base64 encoded pdf
         encoding: "base64",
         contentType: "application/pdf",
       },
