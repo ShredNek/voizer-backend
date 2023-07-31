@@ -33,9 +33,8 @@ app.post("/send", async (req: Request, res: Response) => {
   const mailOptions: MailOptions = {
     from: `"${invoiceDetails.from.name} from Voizer"`, // sender address
     to: invoiceDetails.to.email, // list of receivers
-    subject: `Hi, ${invoiceDetails.to.name}! Please find your invoice from ${invoiceDetails.from.name} attached`, // Subject line
-    text: "Thanks for doing business with us :)", // plain text body
-    html: "<h1>Thanks for doing business with us :)</h1>", // html body
+    subject: `Please find your invoice from ${invoiceDetails.from.name} attached`, // Subject line
+    text: `Hi, ${invoiceDetails.to.name}! If you have any questions regarding the receipt of this invoice, please contact ${invoiceDetails.from.name} @ <${invoiceDetails.from.email}>. \nThank you for your business `, // plain text body
     attachments: [
       {
         filename: `#INV${invoiceDetails.invoiceNumber}.pdf`,
